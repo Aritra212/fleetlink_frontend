@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { ISignUpForm, SignUpSchema } from "./schemas/sign-up-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -16,10 +16,17 @@ import { Input } from "../ui/input";
 import { EyeIcon, EyeOffIcon, Mail } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import useUser from "@/lib/hooks/use-user";
+import { signUp } from "@/utils/data-access/auth";
+import { toast } from "sonner";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const router = useRouter();
+  const { user, login } = useUser();
 
   const form = useForm<ISignUpForm>({
     resolver: zodResolver(SignUpSchema),
@@ -27,15 +34,38 @@ export default function SignUpForm() {
       name: "",
       email: "",
       password: "",
-      confirm_password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = async (values: ISignUpForm) => {
-    console.log(values);
+    const { name, email, password } = values;
+
+    const { data, error } = await signUp(values);
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    const user = data.user;
+
+    // Set context + localStorage
+    login(user);
+    localStorage.setItem("user", JSON.stringify(user));
+    document.cookie = `userId=${data.user._id}; path=/; max-age=86400`;
+
+    toast.success("Account created successfully");
+    router.push("/");
   };
 
   const isLoading = form.formState.isSubmitting;
+
+  useEffect(() => {
+    if (user?._id) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   return (
     <Form {...form}>
@@ -109,7 +139,7 @@ export default function SignUpForm() {
 
         <FormField
           control={form.control}
-          name="confirm_password"
+          name="confirmPassword"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Confirm Password *</FormLabel>
@@ -148,7 +178,7 @@ export default function SignUpForm() {
             type="submit"
             className="w-64 h-12 text-lg"
             disabled={isLoading}
-            // loading={isLoading}
+            loading={isLoading}
           >
             Sign up
           </Button>

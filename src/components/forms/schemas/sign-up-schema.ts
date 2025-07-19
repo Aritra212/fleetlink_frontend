@@ -11,11 +11,11 @@ export const SignUpSchema = z
     password: z
       .string()
       .min(8, { error: "Password must be of atleast 8 characters" }),
-    confirm_password: z
+    confirmPassword: z
       .string()
       .min(8, { error: "Password must be of atleast 8 characters" }),
   })
-  .refine((data) => data.password === data.confirm_password, {
+  .refine((data) => data.password === data.confirmPassword, {
     error: "Passwords do not match.",
     path: ["confirmPassword"],
   });

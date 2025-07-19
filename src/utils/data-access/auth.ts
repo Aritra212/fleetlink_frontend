@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 
 export async function signUp(formData: ISignUpForm) {
   try {
-    const response = await fetch(`${env.SERVER_URL}/auth/register`, {
+    const response = await fetch(`${env.SERVER_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
