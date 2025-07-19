@@ -24,6 +24,9 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import { addVehicle } from "@/utils/data-access/vehicle";
+import { toast } from "sonner";
 
 type Props = {
   children: React.ReactNode;
@@ -38,14 +41,24 @@ export default function AddVehicleDialogForm({ children }: Props) {
     },
   });
 
+  const [open, setOpen] = useState(false);
+
   const onSubmit = async (values: IAddVehicleForm) => {
-    console.log(values);
+    const { data, error } = await addVehicle(values);
+
+    if (error) {
+      return toast.error(error);
+    }
+
+    toast.success("Vehicle added successfully");
+    form.reset();
+    setOpen(false);
   };
 
   const isLoading = form.formState.isSubmitting;
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -118,7 +131,7 @@ export default function AddVehicleDialogForm({ children }: Props) {
                 type="submit"
                 className="w-64 h-12 text-lg"
                 disabled={isLoading}
-                // loading={isLoading}
+                loading={isLoading}
               >
                 Add Vehcile
               </Button>
