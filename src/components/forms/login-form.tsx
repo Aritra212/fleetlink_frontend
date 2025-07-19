@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -16,9 +16,17 @@ import { EyeIcon, EyeOffIcon, Mail } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { ISignInForm, SignInSchema } from "./schemas/sign-in-schema";
+import useUser from "@/lib/hooks/use-user";
+import { useRouter } from "next/navigation";
+import { signIn } from "@/utils/data-access/auth";
+import { toast } from "sonner";
 
 export default function SignInForm() {
+  const { user, login } = useUser();
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ISignInForm>({
     resolver: zodResolver(SignInSchema),
@@ -29,10 +37,30 @@ export default function SignInForm() {
   });
 
   const onSubmit = async (values: ISignInForm) => {
-    console.log(values);
+    setIsLoading(true);
+    const { data, error } = await signIn(values);
+    if (error) {
+      setIsLoading(false);
+      return toast.error(error);
+    }
+
+    // Update context + localStorage
+    login({
+      _id: data.user._id,
+      name: data.user.name,
+      email: data.user.email,
+    });
+
+    document.cookie = `userId=${data.user._id}; path=/; max-age=86400`;
+
+    router.push("/");
   };
 
-  const isLoading = form.formState.isSubmitting;
+  useEffect(() => {
+    if (user?._id) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   return (
     <Form {...form}>
@@ -95,7 +123,7 @@ export default function SignInForm() {
             type="submit"
             className="w-64 h-12 text-lg"
             disabled={isLoading}
-            // loading={isLoading}
+            loading={isLoading}
           >
             Login{" "}
           </Button>

@@ -9,10 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { isUserActive } from "@/utils/data-access/auth";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const _isUserActive = await isUserActive();
   return (
     <div className="flex flex-col justify-center space-y-10 h-full">
       <div>
@@ -25,14 +27,22 @@ export default function HomePage() {
         </p>
 
         <div className="flex gap-4 w-fit mx-auto mt-4">
-          <Link href={"/login"}>
-            <Button size={"lg"}>Login</Button>
-          </Link>
-          <Link href={"/sign-up"}>
-            <Button variant={"outline"} size={"lg"}>
-              Sign Up
-            </Button>
-          </Link>
+          {_isUserActive ? (
+            <Link href={"/profile"} className="w-fit mx-auto">
+              <Button size={"lg"}>My Bookings</Button>
+            </Link>
+          ) : (
+            <>
+              <Link href={"/login"}>
+                <Button size={"lg"}>Login</Button>
+              </Link>
+              <Link href={"/sign-up"}>
+                <Button variant={"outline"} size={"lg"}>
+                  Sign Up
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
