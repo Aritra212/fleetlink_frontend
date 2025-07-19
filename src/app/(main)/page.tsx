@@ -1,4 +1,5 @@
 import AddVehicleDialogForm from "@/components/forms/add-vehicle-dialog-form";
+import SearchVechilesDialogForm from "@/components/forms/search-vechiles-dialog-form";
 import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,7 +65,9 @@ export default function HomePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center px-0">
-            <Button size={"lg"}>Search Vehicles</Button>
+            <SearchVechilesDialogForm>
+              <Button size={"lg"}>Search Vehicles</Button>
+            </SearchVechilesDialogForm>
           </CardContent>
         </Card>
       </div>
