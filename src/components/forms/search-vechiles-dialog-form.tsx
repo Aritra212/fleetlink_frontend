@@ -24,6 +24,7 @@ import {
   ISearchVechilesForm,
   SearchVechilesSchema,
 } from "./schemas/search-vechiles-schema";
+import { useRouter } from "next/navigation";
 
 type Props = {
   children: React.ReactNode;
@@ -34,13 +35,24 @@ export default function SearchVechilesDialogForm({ children }: Props) {
     resolver: zodResolver(SearchVechilesSchema),
     defaultValues: {
       capacity: 0,
+      date_time: "",
       from: "",
       to: "",
     },
   });
 
+  const router = useRouter();
+
   const onSubmit = async (values: ISearchVechilesForm) => {
-    console.log(values);
+    const params = new URLSearchParams();
+
+    if ((values.capacity as number) > 0)
+      params.set("capacity", String(values.capacity));
+    if (values.date_time) params.set("date_time", values.date_time as string);
+    if (values.from) params.set("from", values.from);
+    if (values.to) params.set("to", values.to);
+
+    router.push(`/vehicles?${params.toString()}`);
   };
 
   const isLoading = form.formState.isSubmitting;
@@ -140,7 +152,7 @@ export default function SearchVechilesDialogForm({ children }: Props) {
                 type="submit"
                 className="w-64 h-12 text-lg"
                 disabled={isLoading}
-                // loading={isLoading}
+                loading={isLoading}
               >
                 Search Vehciles
               </Button>
