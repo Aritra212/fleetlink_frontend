@@ -13,8 +13,9 @@ import { bookVehicle } from "@/utils/data-access/vehicle";
 
 type Props = {
   vehicleData: IVehicleCard;
+  isBooked?: boolean;
 };
-export default function VehicleCard({ vehicleData }: Props) {
+export default function VehicleCard({ vehicleData, isBooked }: Props) {
   const { user } = useUser();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -90,9 +91,15 @@ export default function VehicleCard({ vehicleData }: Props) {
           <Separator orientation="vertical" className="hidden md:block h-16" />
 
           <div className="flex flex-col gap-2">
-            <Button size={"lg"} onClick={handleBooking}>
-              Book Now
-            </Button>
+            {!isBooked ? (
+              <Button size={"lg"} onClick={handleBooking}>
+                Book Now
+              </Button>
+            ) : (
+              <Button size={"lg"} disabled>
+                Booked
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

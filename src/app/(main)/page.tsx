@@ -28,7 +28,7 @@ export default async function HomePage() {
 
         <div className="flex gap-4 w-fit mx-auto mt-4">
           {_isUserActive ? (
-            <Link href={"/profile"} className="w-fit mx-auto">
+            <Link href={"/bookings"} className="w-fit mx-auto">
               <Button size={"lg"}>My Bookings</Button>
             </Link>
           ) : (

@@ -91,3 +91,29 @@ export async function bookVehicle(payload: {
     return { data: null, error: "Something went wrong" };
   }
 }
+
+export async function getBookingsByCustomer(customerId: string) {
+  try {
+    const url = new URL(`${env.SERVER_URL}/api/bookings`);
+    url.searchParams.append("customerId", customerId);
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      return { data: null, error: err.error || "Failed to fetch bookings" };
+    }
+
+    const data = await res.json();
+    return { data, error: null };
+  } catch (error) {
+    console.error("Fetch error:", error);
+    return { data: null, error: "Something went wrong" };
+  }
+}
