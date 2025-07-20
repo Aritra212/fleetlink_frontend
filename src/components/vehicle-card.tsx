@@ -45,7 +45,7 @@ export default function VehicleCard({ vehicleData, isBooked }: Props) {
       new Date(startTime).getTime() + rideDuration * 60 * 60 * 1000
     );
 
-    const { data, error } = await bookVehicle({
+    const { error } = await bookVehicle({
       vehicleId: vehicleData._id,
       customerId,
       fromPincode,

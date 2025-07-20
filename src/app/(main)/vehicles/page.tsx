@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import VehicleCard from "@/components/vehicle-card";
 import { getAvailableVehicles } from "@/utils/data-access/vehicle";
-import { Home, MoveLeft } from "lucide-react";
+import { MoveLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 

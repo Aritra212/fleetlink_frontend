@@ -1,7 +1,6 @@
 "use server";
 import { ISignInForm } from "@/components/forms/schemas/sign-in-schema";
 import { ISignUpForm } from "@/components/forms/schemas/sign-up-schema";
-import { User } from "@/components/user-context";
 import { env } from "@/lib/env";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -21,6 +20,7 @@ export async function signUp(formData: ISignUpForm) {
     const data = await response.json();
     return { data, error: null };
   } catch (error) {
+    console.error(error);
     return { data: null, error: "Something went wrong" };
   }
 }

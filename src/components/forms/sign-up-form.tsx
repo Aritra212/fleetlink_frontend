@@ -39,8 +39,6 @@ export default function SignUpForm() {
   });
 
   const onSubmit = async (values: ISignUpForm) => {
-    const { name, email, password } = values;
-
     const { data, error } = await signUp(values);
 
     if (error) {

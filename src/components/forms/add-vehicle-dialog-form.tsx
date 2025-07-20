@@ -44,7 +44,7 @@ export default function AddVehicleDialogForm({ children }: Props) {
   const [open, setOpen] = useState(false);
 
   const onSubmit = async (values: IAddVehicleForm) => {
-    const { data, error } = await addVehicle(values);
+    const { error } = await addVehicle(values);
 
     if (error) {
       return toast.error(error);
