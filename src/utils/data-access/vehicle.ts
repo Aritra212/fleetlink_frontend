@@ -34,7 +34,6 @@ export async function getAvailableVehicles(
 ) {
   const query = new URLSearchParams();
 
-  // Map frontend keys to backend expected names
   if (typeof searchParams.capacity === "string") {
     query.set("capacityRequired", searchParams.capacity);
   }
@@ -63,4 +62,32 @@ export async function getAvailableVehicles(
 
   const data = await res.json();
   return { data, error: null };
+}
+
+export async function bookVehicle(payload: {
+  vehicleId: string;
+  customerId: string;
+  fromPincode: string;
+  toPincode: string;
+  startTime: string;
+  endTime: string;
+}) {
+  try {
+    const res = await fetch(`${env.SERVER_URL}/api/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      return { data: null, error: err.error || "Booking failed" };
+    }
+
+    const data = await res.json();
+    return { data, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Something went wrong" };
+  }
 }

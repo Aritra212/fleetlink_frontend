@@ -1,14 +1,63 @@
+"use client";
+
 import { IVehicleCard } from "@/common/common.interfaces";
 import { Card, CardContent } from "./ui/card";
 import { Clock, ShipWheel, Truck, Weight } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
+import useUser from "@/lib/hooks/use-user";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { bookVehicle } from "@/utils/data-access/vehicle";
 
 type Props = {
   vehicleData: IVehicleCard;
 };
 export default function VehicleCard({ vehicleData }: Props) {
+  const { user } = useUser();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const handleBooking = async () => {
+    const customerId = user?._id;
+    const startTime = searchParams.get("date_time");
+    const fromPincode = searchParams.get("from");
+    const toPincode = searchParams.get("to");
+
+    if (!customerId)
+      return toast.info("Customer Id not found. Login and try again...", {
+        action: {
+          label: "Login",
+          onClick: () => router.push("/login"),
+        },
+      });
+
+    if (!startTime || !fromPincode || !toPincode) {
+      return toast.error("Booking failed. Missing info.");
+    }
+
+    const rideDuration =
+      Math.abs(parseInt(fromPincode) - parseInt(toPincode)) % 24 || 1;
+
+    const end = new Date(
+      new Date(startTime).getTime() + rideDuration * 60 * 60 * 1000
+    );
+
+    const { data, error } = await bookVehicle({
+      vehicleId: vehicleData._id,
+      customerId,
+      fromPincode,
+      toPincode,
+      startTime,
+      endTime: end.toISOString(),
+    });
+
+    if (error) return toast.error(error);
+    toast.success("Vehicle booked successfully!");
+    router.refresh();
+  };
+
   return (
     <Card key={vehicleData._id} className="border-l-4 border-l-blue-500 h-48">
       <CardContent className="p-6 my-auto">
@@ -41,7 +90,9 @@ export default function VehicleCard({ vehicleData }: Props) {
           <Separator orientation="vertical" className="hidden md:block h-16" />
 
           <div className="flex flex-col gap-2">
-            <Button size={"lg"}>Book Now</Button>
+            <Button size={"lg"} onClick={handleBooking}>
+              Book Now
+            </Button>
           </div>
         </div>
       </CardContent>
