@@ -22,7 +22,7 @@ export default async function VehiclesPage({ searchParams }: Props) {
   if (error) toast.error(error);
 
   return (
-    <div className="flex flex-col justify-center items-center space-y-10 h-full py-10 overflow-y-auto">
+    <div className="flex flex-col justify-start items-center space-y-10 h-full py-10 overflow-y-auto">
       <div className="max-w-7xl min-w-xl md:min-w-5xl">
         <div className="flex gap-4 w-fit items-center">
           <Logo withText />
