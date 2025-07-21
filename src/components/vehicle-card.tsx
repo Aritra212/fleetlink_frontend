@@ -81,10 +81,12 @@ export default function VehicleCard({ vehicleData, isBooked }: Props) {
                 <ShipWheel className="h-4 w-4 text-muted-foreground" />
                 <span>Tyres: {(vehicleData.tyres as number) ?? 0}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <span>Est. Duration: {vehicleData.duration}</span>
-              </div>
+              {vehicleData.duration && (
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span>Est. Duration: {vehicleData.duration}</span>
+                </div>
+              )}
             </div>
           </div>
 

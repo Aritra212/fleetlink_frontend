@@ -1,6 +1,6 @@
 "use client";
 
-import { IVehicleCard } from "@/common/common.interfaces";
+import { IMyBookingCard, IVehicleCard } from "@/common/common.interfaces";
 import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function BookingsPage() {
-  const [myBookings, setMyBookings] = useState([]);
+  const [myBookings, setMyBookings] = useState<IMyBookingCard[]>([]);
   const { user } = useUser();
 
   useEffect(() => {
@@ -22,7 +22,8 @@ export default function BookingsPage() {
 
       const { data, error } = await getBookingsByCustomer(user._id);
       if (error) return toast.error(error);
-      setMyBookings(data);
+
+      setMyBookings(data ?? []);
     };
 
     fetchBookings();
@@ -54,8 +55,12 @@ export default function BookingsPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-h-[60vh] ">
           {myBookings?.length > 0 ? (
-            (myBookings as unknown as IVehicleCard[]).map((cardData) => (
-              <VehicleCard vehicleData={cardData} isBooked key={cardData._id} />
+            myBookings.map(({ vehicleId }) => (
+              <VehicleCard
+                vehicleData={vehicleId}
+                isBooked
+                key={vehicleId._id}
+              />
             ))
           ) : (
             <p className="text-center mt-10 sm:col-span-2">No data to show</p>

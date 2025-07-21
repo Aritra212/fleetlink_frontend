@@ -5,3 +5,12 @@ export interface IVehicleCard {
   capacityKg: number;
   tyres: number;
 }
+
+export interface IMyBookingCard {
+  vehicleId: IVehicleCard;
+  _id: string;
+  fromPincode: string;
+  toPincode: string;
+  startTime: string;
+  endTime: string;
+}

@@ -1,3 +1,4 @@
+import { IMyBookingCard } from "@/common/common.interfaces";
 import { IAddVehicleForm } from "@/components/forms/schemas/add-vehicle-schema";
 import { env } from "@/lib/env";
 
@@ -111,7 +112,7 @@ export async function getBookingsByCustomer(customerId: string) {
     }
 
     const data = await res.json();
-    return { data, error: null };
+    return { data: data as unknown as IMyBookingCard[], error: null };
   } catch (error) {
     console.error("Fetch error:", error);
     return { data: null, error: "Something went wrong" };
